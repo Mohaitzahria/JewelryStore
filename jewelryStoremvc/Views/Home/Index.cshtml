@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Jewelry>
+
+@{
+    Layout = "_Layout";
+}
+<br>
+<br>
+<br />
+<div class="my-2">
+        <form method="get" action="@Url.Action("Index", "Home")" class="row row-cols-lg-auto g-3 align-items-center">
+
+@*     <form class="row row-cols-lg-auto g-3 align-items-center">
+ *@  
+
+  <div class="col-12">
+    <label class="visually-hidden" for="inlineFormSelectPref">Genres</label>
+    <select class="form-select" id="genreId">
+      <option selected>Choose...</option>
+      <option value="1">RINGS</option>
+      <option value="2">NECKLACES</option>
+      <option value="3">BRACELETS</option>
+      <option value="4">WEDDING BANDS</option>
+
+
+    </select>
+  </div>
+        <div class="col-12">
+            <label class="visually-hidden" for="inlineFormInputGroupUsername">Search by title</label>
+            <div class="input-group">
+                <div class="input-group-text"></div>
+                <input type="text" class="form-control" id="sterm" name ="sterm" placeholder="Search by title">
+            </div>
+        </div>
+
+  
+
+  <div class="col-12">
+    <button type="submit" class="btn btn-primary">Search</button>
+  </div>
+</form>
+</div>
+
+<br>
+<img src="~/images/final.webp" alt="Description de l'image" style="max-width: 100%; height: 60%; display: block; margin: 0 auto;">
+<br>
+<br>
+<br>
+
+
+
+<div class="w-100 d-flex flex-wrap justify-content-center">
+    @foreach (var jewelry in Model)
+    {
+        <div class="card mx-2 mb-4" style="width: 16rem;">
+            @if(string.IsNullOrEmpty(jewelry.image))
+            {
+                <img src="~/images/1.webp" class="card-img-top" alt="...">
+
+
+            }
+            else{
+            <img src="~/images/@jewelry.image" class="card-img-top" alt="...">
+            }
+            <div class="card-body">
+                <h6 class="card-title">@jewelry.JewelryName</h6>
+                <p class="card-text">price:@jewelry.Price$</p>
+                <button type="button" onclick="add(@jewelry.Id)" class="btn btn-primary">Add to cart</button>
+            </div>
+        </div>
+    }
+</div>
+
+<br>
+<br>
+<br>
+<img src="~/images/3.png" alt="Description de l'image" style="max-width: 100%; height: 60%; display: block; margin: 0 auto;">
+<br>
+<img src="~/images/4.png" alt="Description de l'image" style="max-width: 100%; height: 60%; display: block; margin: 0 auto;">
+<br>
+
+<img src="~/images/2.png" alt="Description de l'image" style="max-width: 100%; height: 60%; display: block; margin: 0 auto;">
+
+
+
+
+
+
+@section Scripts {
+    <script>
+        async function add(jewelryId) {
+            console.log('Adding item to cart:', jewelryId);
+
+            var usernameEl = document.getElementById("username");
+            if (usernameEl == null) {
+                window.location.href = "/Identity/Account/Login";
+            }
+
+            try {
+                var response = await fetch(`/Cart/AddItem?jewelryId=${jewelryId}`);
+                if (response.status == 200) {
+                    var result = await response.json();
+                    console.log('Response:', result);
+
+                    var cartCountEl = document.getElementById("cartCount");
+                    cartCountEl.innerHTML = result;
+                    window.location.href = "#cartCount";
+                }
+            }
+            catch (err) {
+                console.log('Error:', err);
+            }
+        }
+
+    </script>
+
+}
